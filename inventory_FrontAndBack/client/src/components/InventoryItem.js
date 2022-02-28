@@ -1,162 +1,189 @@
-// import React from "react";
-// import { useState, useEffect } from "react";
-// import Dropdown from "react-dropdown";
-// import "react-dropdown/style.css";
-// import Select from "react-select";
-// import { Table, Button } from "react-bootstrap";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import Axios from "axios";
-// import "./InventoryItem.css";
-// // imported yt
-// import Async, { useAsync } from "react-select/async";
+import React from "react";
+import { useState, useEffect } from "react";
+import Dropdown from "react-dropdown";
+import "react-dropdown/style.css";
+import Select from "react-select";
+import { Table, Button } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Axios from "axios";
+import "./InventoryItem.css";
+import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
+import { AiFillCamera, AiOutlineCamera } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
+import MainCam from "./mainCam";
 
-// export default function InventoryItem() {
-//   const [quantity, setQuantity] = useState(0);
-//   const [description, setDescription] = useState("");
-//   const [location, setLocation] = useState([]);
-//   const [itemname, setItemName] = useState("");
-//   const [attend, setAttend] = useState([]);
-//   const [work, setWork] = useState([]);
-//   // imported yt
-//   const [inputValue, setValue] = useState("");
-//   const [selectedValue, setSelectedValue] = useState(null);
-//   useEffect(async () => {
-//     const result = await axios("http://localhost:5000/mylocation");
-//     const x = result.data;
+export default function InventoryItem(props) {
+  let navigate = useNavigate();
 
-//     const options = x.map((d) => ({
-//       label: d.loc_name,
+  const routeChange1 = () => {
+    let path1 = "/mainCam";
+    navigate(path1);
+  };
 
-//       value: d.location_id,
-//     }));
+  const [quantity, setQuantity] = useState(0);
+  const [dataa, setDataa] = useState([]);
+  const [itemOption, setItemOption] = useState([]);
+  const [description, setDescription] = useState("");
+  const [locname, setLocname] = useState("");
 
-//     setWork(options);
-//   }, []);
+  const [itemname, setItemName] = useState("");
+  //   const [attend, setAttend] = useState([]);
+  //   const [temp, setTemp] = useState("");
 
-//   const handleInputChange = (value) => {
-//     setValue(value);
-//   };
-//   const handleChange = (value) => {
-//     setSelectedValue(value);
-//   };
-//   const fetchData = () => {
-//     return Axios.get("http://localhost:5000/getLocation").then((response) => {
-//       const res = response.data.data;
-//       return res;
-//     });
+  //   const [inputValue, setValue] = useState("");
+  //   const [selectedValue, setSelectedValue] = useState(null);
+  const [itemList, setItemList] = useState([]);
+  //   const [data, setData] = useState([]);
+  // getting location values from backend
+  useEffect(async () => {
+    const result = await Axios("http://localhost:5000/getLocation");
+    const x = result.data;
+    const options = x.map((d) => ({
+      label: d.loc_name,
+      value: d.location_id,
+    }));
+    setDataa(options);
+  }, []);
+  console.log(props);
+  // getting item values from backend
+  useEffect(async () => {
+    const result = await Axios("http://localhost:5000/getItem");
+    const x = result.data;
+    const options = x.map((d) => ({
+      label: d.itemlist_name,
+      value: d.itemlist_id,
+    }));
+    setItemOption(options);
+  }, []);
 
-//     //////////
-//     const [itemList, setItemList] = useState([]);
-//     const [data, setData] = useState([]);
-//     const addItemDetails = () => {
-//       Axios.post("http://localhost:5000/addmom", {
-//         quantity: quantity,
-//         description: description,
-//         itemname: itemname,
-//         location: location,
-//       }).then(() => {
-//         console.log("Success");
-//         setItemList([
-//           ...itemList,
-//           {
-//             quantity: quantity,
-//             description: description,
-//             itemname: itemname,
-//             location: location,
-//           },
-//         ]);
-//       });
-//     };
-//     const getLocation = () => {
-//       Axios.get("http://localhost:5000/getLocation").then((response) => {
-//         console.log(response);
-//         // setEmployeeList(response.data);
-//       });
-//     };
+  const addItemDetails = () => {
+    Axios.post("http://localhost:5000/addmom", {
+      quantity: quantity,
+      description: description,
+      itemname: itemname.label,
+      locname: locname.label,
+    }).then(() => {
+      console.log("Success");
+      let myval = locname.label;
+      let myvalItem = itemname.label;
+      setItemList([
+        ...itemList,
+        {
+          quantity: quantity,
+          description: description,
+          myvalItem: myvalItem,
+          myval: myval,
+        },
+      ]);
+    });
+  };
 
-//     useEffect(async () => {
-//       const result = await Axios("http://localhost:5000/getLocation");
-//       const x = result.data;
-//       const options = x.map((d) => ({
-//         label: d.location_name,
-//         value: d.location_id,
-//       }));
-//       setLocation(options);
-//     }, []);
+  return (
+    <div className="InventoryItem">
+      <div>Inventory category: XYZ</div>
+      <div>Date: XYZ</div>
+      <div>Time: XYZ</div>
+      <div className="information">
+        <label>Item Name</label>
+        <Select options={itemOption} value={itemname} onChange={setItemName} />
 
-//     return (
-//       <div className="InventoryItem">
-//         <div className="information">
-//           <label>Item Name</label>
-//           <input
-//             type="text"
-//             onChange={(event) => {
-//               setItemName(event.target.value);
-//             }}
-//           />
-//           <label>Quantity</label>
-//           <input
-//             type="number"
-//             onChange={(event) => {
-//               setQuantity(event.target.value);
-//             }}
-//           />
-//           <label>Description</label>
-//           <input
-//             type="text"
-//             onChange={(event) => {
-//               setDescription(event.target.value);
-//             }}
-//           />
-
-//           {/* Location  */}
-//           <div>
-//             <div>
-//               <p>Enter location:</p>
-//               {/* <input
-//               type="text"
-//               onChange={(event) => {
-//                 setLocation(event.target.value);
-//               }}
-//             /> */}
-//               <Select options={work} value={attend} onChange={setAttend} />
-//             </div>
-//           </div>
-
-//           <button onClick={addItemDetails} style={{ margin: "10px" }}>
-//             Add inventory
-//           </button>
-
-//           <Table striped bordered hover variant="dark">
-//             <thead>
-//               <tr>
-//                 <th>Index</th>
-//                 <th>Item Name</th>
-//                 <th>Quantity</th>
-//                 <th>Description</th>
-//                 <th>Location</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {itemList.map((val, key) => {
-//                 return (
-//                   <tr key={key}>
-//                     <td>{key}</td>
-//                     <td>{val.itemname}</td>
-//                     <td>{val.quantity}</td>
-//                     <td>{val.description}</td>
-//                     <td>{val.location}</td>
-//                   </tr>
-//                 );
-//               })}
-//             </tbody>
-//           </Table>
-
-//           <Select options={dataOpt} value={data} onChange={setData} />
-
-//           {/* <button onClick={getLocation}></button> */}
-//         </div>
-//       </div>
-//     );
-//   };
-// }
+        {/* Location  */}
+        <div>
+          <div>
+            <p>Enter location:</p>
+            <Select options={dataa} value={locname} onChange={setLocname} />
+          </div>
+        </div>
+        <label>Quantity</label>
+        <input
+          type="number"
+          onChange={(event) => {
+            setQuantity(event.target.value);
+          }}
+        />
+        <label>Description</label>
+        <input
+          type="text"
+          onChange={(event) => {
+            setDescription(event.target.value);
+          }}
+        />
+        <label>Please capture below 5 pictures</label>
+        <div style={{ textAlign: "left", marginTop: "13px" }}>
+          <div style={{ fontSize: "20px" }}>
+            {" "}
+            1.{" "}
+            <AiFillCamera
+              style={{ fontSize: "30px", cursor: "pointer" }}
+              onClick={routeChange1}
+            />{" "}
+            Barcode
+          </div>
+          <div style={{ fontSize: "20px" }}>
+            {" "}
+            2.{" "}
+            <AiFillCamera
+              style={{ fontSize: "30px", cursor: "pointer" }}
+              onClick={routeChange1}
+            />{" "}
+            Manufacturer code
+          </div>
+          <div style={{ fontSize: "20px" }}>
+            {" "}
+            3.{" "}
+            <AiFillCamera
+              style={{ fontSize: "30px", cursor: "pointer" }}
+              onClick={routeChange1}
+            />{" "}
+            Closeup picture of item
+          </div>
+          <div style={{ fontSize: "20px" }}>
+            {" "}
+            4.{" "}
+            <AiFillCamera
+              style={{ fontSize: "30px", cursor: "pointer" }}
+              onClick={routeChange1}
+            />{" "}
+            Front side of item
+          </div>
+          <div style={{ fontSize: "20px" }}>
+            {" "}
+            5.{" "}
+            <AiFillCamera
+              style={{ fontSize: "30px", cursor: "pointer" }}
+              onClick={routeChange1}
+            />{" "}
+            Back side of item
+          </div>
+        </div>
+        <button onClick={addItemDetails} style={{ margin: "10px" }}>
+          Add inventory
+        </button>
+        <Table striped bordered hover variant="dark">
+          <thead>
+            <tr>
+              <th>Index</th>
+              <th>Item Name</th>
+              <th>Quantity</th>
+              <th>Description</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {itemList.map((val, key) => {
+              return (
+                <tr key={key}>
+                  <td>{key}</td>
+                  <td>{val.myvalItem}</td>
+                  <td>{val.quantity}</td>
+                  <td>{val.description}</td>
+                  <td>{val.myval}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </div>
+    </div>
+  );
+}

@@ -5,8 +5,8 @@ const Work = () => {
   const [dataa, setDataa] = useState([]);
   const [kaka, setKaka] = useState([]);
   const [bundle, setBundle] = useState([]);
-  const [ok, setOk] = useState("");
-  const [bye, setBye] = useState("");
+  const [locname, setLocname] = useState("");
+  const [temp, setTemp] = useState("");
   useEffect(async () => {
     const result = await axios("http://localhost:5000/getLocation");
 
@@ -23,11 +23,13 @@ const Work = () => {
 
   const inserting = () => {
     axios
-      .post("http://localhost:5000/addmom", {
-        ok: dataa.value,
+      .post("http://localhost:5000/postingLocation", {
+        locname: locname.label,
+        // ok: dataa.value,
       })
       .then(() => {
-        console.log("posting working");
+        console.log(locname.label);
+        setTemp(locname.label);
         setBundle([
           ...bundle,
           {
@@ -41,7 +43,8 @@ const Work = () => {
 
   return (
     <>
-      <Select options={dataa} value={kaka} onChange={setKaka} />
+      <Select options={dataa} value={locname} onChange={setLocname} />
+      {temp}
       <button onClick={inserting}>Post me</button>
     </>
   );

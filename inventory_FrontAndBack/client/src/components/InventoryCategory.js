@@ -38,11 +38,8 @@ export default function InventoryCategory() {
     <div>
       <h1>Inventory Category Page</h1>
       <h3>Create new inventory</h3>
-      <input
-        type="text"
-        label="Enter category name"
-        onChange={(e) => setCategory(e.target.value)}
-      />
+      <div>Enter inventory category</div>
+      <input type="text" onChange={(e) => setCategory(e.target.value)} />
       <div>Enter date</div>
       <input type="date" onChange={(e) => setDate(e.target.value)} />
       <div>Enter time</div>

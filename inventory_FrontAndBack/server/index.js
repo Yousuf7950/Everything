@@ -32,9 +32,27 @@ app.post("/createCategory", (req, res) => {
   );
 });
 
-// getting item name
+// posting location
+app.post("/postingLocation", (req, res) => {
+  console.log(req.body.locname);
+  const loc_name = req.body.locname;
+
+  db.query(
+    "INSERT INTO posting_location (loc_name) VALUES (?)",
+    [loc_name],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send("Values inserted");
+      }
+    }
+  );
+});
+
+// getting item names
 app.get("/getItem", (req, res) => {
-  db.query("Select * from location", (err, result) => {
+  db.query("Select * from itemlist", (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -54,7 +72,7 @@ app.get("/getLocation", (req, res) => {
   });
 });
 
-// getting inventory categories
+// getting inventory categories to display on categories page
 app.get("/getCategories", (req, res) => {
   db.query("Select * from inventory_category", (err, result) => {
     if (err) {
@@ -65,33 +83,14 @@ app.get("/getCategories", (req, res) => {
   });
 });
 
-// Inventory Item
-// app.post("/createInventoryItem", (req, res) => {
-//   console.log(req.body);
-//   const item_name = req.body.item_name;
-//   const location = req.body.location;
-//   const quantity = req.body.quantity;
-//   const description = req.body.description;
-
-//   db.query(
-//     "INSERT INTO item (quantity,description,item_name,location) VALUES (?,?,?,?)",
-//     [quantity, description, , item_name, location],
-//     (err, result) => {
-//       if (err) {
-//         console.log(req.body);
-//         console.log(err);
-//       } else {
-//         res.send("Values inserted");
-//       }
-//     }
-//   );
-// });
-
 app.post("/addmom", (req, res) => {
-  const location_name = req.body.location_name;
+  const quantity = req.body.quantity;
+  const description = req.body.description;
+  const itemname = req.body.itemname;
+  const locname = req.body.locname;
   db.query(
-    "INSERT INTO example (location_name) VALUES (?)",
-    [location_name],
+    "INSERT INTO item (quantity,description,location,item_name) VALUES (?,?,?,?)",
+    [quantity, description, locname, itemname],
 
     (err, result) => {
       if (err) {
